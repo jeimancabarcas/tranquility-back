@@ -19,6 +19,7 @@ async function bootstrap() {
     .setDescription('API para la gestión de autoauditorías sanitarias')
     .setVersion('1.0')
     .addTag('audits')
+    .addTag('evidences')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

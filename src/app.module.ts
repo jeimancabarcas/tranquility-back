@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuditModule } from './audits/audit.module';
 import { Audit } from './audits/entities/audit.entity';
+import { EvidenceModule } from './evidences/evidence.module';
+import { Evidence } from './evidences/entities/evidence.entity';
 
 @Module({
   imports: [
@@ -21,12 +23,13 @@ import { Audit } from './audits/entities/audit.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Audit],
+        entities: [Audit, Evidence],
         synchronize: true, // Warning: use only in development
         ssl: configService.get<string>('DB_SSL') === 'true' ? { rejectUnauthorized: false } : false,
       }),
     }),
     AuditModule,
+    EvidenceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

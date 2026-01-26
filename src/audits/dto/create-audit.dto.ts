@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsString, IsNotEmpty, IsNumber, ValidateNested, IsObject } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, ValidateNested, IsObject, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 class AuditStatsDto {
@@ -34,6 +34,10 @@ class AuditStatsDto {
     @ApiProperty()
     @IsNumber()
     totalCritical: number;
+
+    @ApiProperty()
+    @IsNumber()
+    totalCheckboxes: number;
 
     @ApiProperty()
     @IsNumber()
@@ -83,6 +87,11 @@ class AuditStateDto {
 }
 
 export class CreateAuditDto {
+    @ApiProperty({ example: 'Auditoría Sede Norte - Enero 2024', required: false })
+    @IsString()
+    @IsOptional()
+    title?: string;
+
     @ApiProperty({ example: 'Auditoría Mensual Cocina' })
     @IsString()
     @IsNotEmpty()
