@@ -2,13 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { INestApplication } from '@nestjs/common';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+let cachedApp: INestApplication;
 
+async function setupApp(app: INestApplication) {
   // CORS Configuration
   app.enableCors({
-    origin: '*', // En producción deberías especificar los dominios permitidos
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
@@ -28,7 +29,28 @@ async function bootstrap() {
     whitelist: true,
     transform: true,
   }));
+}
 
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  await setupApp(app);
   await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+
+// Exportación para Vercel (Serverless Handler)
+export default async (req: any, res: any) => {
+  if (!cachedApp) {
+    const app = await NestFactory.create(AppModule);
+    await setupApp(app);
+    await app.init();
+    cachedApp = app;
+  }
+
+  const instance = cachedApp.getHttpAdapter().getInstance();
+  instance(req, res);
+};
+
+// Solo ejecuta bootstrap si no estamos en Vercel
+if (process.env.NODE_ENV !== 'production') {
+  bootstrap();
+}
