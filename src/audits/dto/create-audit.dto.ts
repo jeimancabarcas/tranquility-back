@@ -84,6 +84,14 @@ class AuditStateDto {
     @ApiProperty({ example: { 'res-1': true } })
     @IsObject()
     resolutionsSelection: Record<string, boolean>;
+
+    @ApiProperty({ example: ['https://arweave.net/tx1', 'https://arweave.net/tx2'], required: false })
+    @IsOptional()
+    evidenceLinks?: string[];
+
+    @ApiProperty({ required: false })
+    @IsOptional()
+    detailedChecklist?: any[];
 }
 
 export class CreateAuditDto {

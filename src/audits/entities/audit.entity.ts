@@ -82,6 +82,24 @@ export class Audit {
     @Column({ type: 'jsonb', nullable: true })
     state: any;
 
+    // --- Blockchain Notarization Fields ---
+    @ApiProperty({ required: false })
+    @Column({ nullable: true })
+    blockchain_signature: string;
+
+    @ApiProperty({ required: false })
+    @Column({ nullable: true })
+    solana_tx_id: string;
+
+    @ApiProperty({ required: false })
+    @Column({ type: 'timestamp', nullable: true })
+    timestamp_notarization: Date;
+
+    @ApiProperty({ required: false })
+    @Column({ nullable: true })
+    arweave_tx_id: string;
+    // --------------------------------------
+
     @ApiProperty()
     @CreateDateColumn()
     createdAt: Date;
