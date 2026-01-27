@@ -8,15 +8,26 @@ import * as path from 'path';
 
 @Injectable()
 export class EvidenceService {
-    private readonly uploadPath = 'uploads/evidences';
+    private readonly uploadPath: string;
 
     constructor(
         @InjectRepository(Evidence)
         private readonly evidenceRepository: Repository<Evidence>,
     ) {
-        // Crear directorio de uploads si no existe
-        if (!fs.existsSync(this.uploadPath)) {
-            fs.mkdirSync(this.uploadPath, { recursive: true });
+        // En Vercel (serverless), el único directorio escribible es /tmp
+        // En local, usamos la carpeta uploads en la raíz del proyecto
+        const baseDir = process.env.VERCEL ? '/tmp' : process.cwd();
+        this.uploadPath = path.join(baseDir, 'uploads', 'evidences');
+
+        try {
+            if (!fs.existsSync(this.uploadPath)) {
+                fs.mkdirSync(this.uploadPath, { recursive: true });
+                console.log(`Directorio de evidencias creado en: ${this.uploadPath}`);
+            }
+        } catch (error) {
+            console.error(`Error al crear el directorio de evidencias: ${error.message}`);
+            // No lanzamos el error para permitir que la app inicie, 
+            // pero las subidas fallarán si no hay permisos.
         }
     }
 

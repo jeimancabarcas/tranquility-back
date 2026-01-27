@@ -12,6 +12,7 @@ import {
     Res,
     BadRequestException,
 } from '@nestjs/common';
+import * as path from 'path';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody, ApiQuery } from '@nestjs/swagger';
 import type { Response } from 'express';
@@ -105,7 +106,13 @@ export class EvidenceController {
 
         res.setHeader('Content-Type', evidence.mimeType);
         res.setHeader('Content-Disposition', `attachment; filename="${evidence.originalName}"`);
-        res.sendFile(filePath, { root: '.' });
+
+        // Si la ruta es absoluta, no necesitamos { root: '.' }
+        if (path.isAbsolute(filePath)) {
+            res.sendFile(filePath);
+        } else {
+            res.sendFile(filePath, { root: '.' });
+        }
     }
 
     @Delete(':id')
