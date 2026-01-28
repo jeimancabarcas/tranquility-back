@@ -7,6 +7,8 @@ import { AuditModule } from './audits/audit.module';
 import { Audit } from './audits/entities/audit.entity';
 import { EvidenceModule } from './evidences/evidence.module';
 import { Evidence } from './evidences/entities/evidence.entity';
+import { AiModule } from './ai/ai.module';
+import { ChatHistory } from './ai/entities/chat-history.entity';
 
 @Module({
   imports: [
@@ -23,13 +25,14 @@ import { Evidence } from './evidences/entities/evidence.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Audit, Evidence],
+        entities: [Audit, Evidence, ChatHistory],
         synchronize: true, // Warning: use only in development
         ssl: configService.get<string>('DB_SSL') === 'true' ? { rejectUnauthorized: false } : false,
       }),
     }),
     AuditModule,
     EvidenceModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
